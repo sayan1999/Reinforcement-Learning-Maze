@@ -7,6 +7,8 @@ import numpy as np
 import models
 from environment.maze import Maze, Render
 
+from mazeReader.maze import readMaze
+
 logging.basicConfig(format="%(levelname)-8s: %(asctime)s: %(message)s",
                     datefmt="%Y-%m-%d %H:%M:%S",
                     level=logging.INFO)  # Only show messages *equal to or above* this level
@@ -25,65 +27,70 @@ class Test(Enum):
     SPEED_TEST_2 = auto()
 
 
-test = Test.SARSA_ELIGIBILITY  # which test to run
+test = Test.DEEP_Q  # which test to run
 
-maze = np.array([
-    [0, 1, 0, 0, 0, 0, 0, 0],
-    [0, 1, 0, 1, 0, 1, 0, 0],
-    [0, 0, 0, 1, 1, 0, 1, 0],
-    [0, 1, 0, 1, 0, 0, 0, 0],
-    [1, 0, 0, 1, 0, 1, 0, 0],
-    [0, 0, 0, 1, 0, 1, 1, 1],
-    [0, 1, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 0, 0]
-])  # 0 = free, 1 = occupied
+# maze = np.array([
+#     [0, 1, 0, 0, 0, 0, 0, 0],
+#     [0, 1, 0, 1, 0, 1, 0, 0],
+#     [0, 0, 0, 1, 1, 0, 1, 0],
+#     [0, 1, 0, 1, 0, 0, 0, 0],
+#     [1, 0, 0, 1, 0, 1, 0, 0],
+#     [0, 0, 0, 1, 0, 1, 1, 1],
+#     [0, 1, 1, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 1, 0, 0]
+# ])  # 0 = free, 1 = occupied
 
-game = Maze(maze)
 
-# only show the maze
-if test == Test.SHOW_MAZE_ONLY:
-    game.render(Render.MOVES)
-    game.reset()
+maze, nets = readMaze('mazeData/test_12_12_1.in')
+games = [Maze(maze, *net) for net in nets]
+for game in games:
+# # only show the maze
+# if test == Test.SHOW_MAZE_ONLY:
+#     game.render(Render.MOVES)
+#     game.reset()
 
-# play using random model
-if test == Test.RANDOM_MODEL:
-    game.render(Render.MOVES)
-    model = models.RandomModel(game)
-    game.play(model, start_cell=(0, 0))
+# # play using random model
+# if test == Test.RANDOM_MODEL:
+#     game.render(Render.MOVES)
+#     model = models.RandomModel(game)
+#     game.play(model, start_cell=(0, 0))
 
-# train using tabular Q-learning
-if test == Test.Q_LEARNING:
-    game.render(Render.TRAINING)
-    model = models.QTableModel(game, name="QTableModel")
-    h, w, _, _ = model.train(discount=0.90, exploration_rate=0.10, learning_rate=0.10, episodes=200,
-                             stop_at_convergence=True)
+# # train using tabular Q-learning
+# if test == Test.Q_LEARNING:
+#     game.render(Render.TRAINING)
+#     model = models.QTableModel(game, name="QTableModel")
+#     h, w, _, _ = model.train(discount=0.90, exploration_rate=0.10, learning_rate=0.10, episodes=200,
+#                              stop_at_convergence=True)
 
-# train using tabular Q-learning and an eligibility trace (aka TD-lamba)
-if test == Test.Q_ELIGIBILITY:
-    game.render(Render.TRAINING)
-    model = models.QTableTraceModel(game)
-    h, w, _, _ = model.train(discount=0.90, exploration_rate=0.10, learning_rate=0.10, episodes=200,
-                             stop_at_convergence=True)
+# # train using tabular Q-learning and an eligibility trace (aka TD-lamba)
+# if test == Test.Q_ELIGIBILITY:
+#     game.render(Render.TRAINING)
+#     model = models.QTableTraceModel(game)
+#     h, w, _, _ = model.train(discount=0.90, exploration_rate=0.10, learning_rate=0.10, episodes=200,
+#                              stop_at_convergence=True)
 
-# train using tabular SARSA learning
-if test == Test.SARSA:
-    game.render(Render.TRAINING)
-    model = models.SarsaTableModel(game)
-    h, w, _, _ = model.train(discount=0.90, exploration_rate=0.10, learning_rate=0.10, episodes=200,
-                             stop_at_convergence=True)
+# # train using tabular SARSA learning
+# if test == Test.SARSA:
+#     game.render(Render.TRAINING)
+#     model = models.SarsaTableModel(game)
+#     h, w, _, _ = model.train(discount=0.90, exploration_rate=0.10, learning_rate=0.10, episodes=200,
+#                              stop_at_convergence=True)
 
-# train using tabular SARSA learning and an eligibility trace
-if test == Test.SARSA_ELIGIBILITY:
-    game.render(Render.TRAINING)  # shows all moves and the q table; nice but slow.
-    model = models.SarsaTableTraceModel(game)
-    h, w, _, _ = model.train(discount=0.90, exploration_rate=0.10, learning_rate=0.10, episodes=200,
-                             stop_at_convergence=True)
-# train using a neural network with experience replay (also saves the resulting model)
-if test == Test.DEEP_Q:
-    game.render(Render.TRAINING)
-    model = models.QReplayNetworkModel(game)
-    h, w, _, _ = model.train(discount=0.80, exploration_rate=0.10, episodes=maze.size * 10, max_memory=maze.size * 4,
-                             stop_at_convergence=True)
+# # train using tabular SARSA learning and an eligibility trace
+# if test == Test.SARSA_ELIGIBILITY:
+#     game.render(Render.TRAINING)  # shows all moves and the q table; nice but slow.
+#     model = models.SarsaTableTraceModel(game)
+#     h, w, _, _ = model.train(discount=0.90, exploration_rate=0.10, learning_rate=0.10, episodes=200,
+#                              stop_at_convergence=True)
+
+
+    # train using a neural network with experience replay (also saves the resulting model)
+    if test == Test.DEEP_Q:
+        for game in [game]:
+            # game.render(Render.TRAINING)
+            model = models.QReplayNetworkModel(game)
+            h, w, _, _ = model.train(discount=0.80, exploration_rate=0.10, episodes=maze.size * 10, max_memory=maze.size * 4,
+                                    stop_at_convergence=True)
 
 # draw graphs showing development of win rate and cumulative rewards
 try:
@@ -126,7 +133,7 @@ if test == Test.SPEED_TEST_1:
             model = models.QReplayNetworkModel(game, name="QReplayNetworkModel")
 
         r, w, _, _ = model.train(discount=0.90, exploration_rate=0.10, exploration_decay=0.999, learning_rate=0.10,
-                                 episodes=300)
+                        episodes=30)
         rhist.append(r)
         whist.append(w)
         names.append(model.name)
@@ -173,7 +180,7 @@ if test == Test.SPEED_TEST_2:
                 model = models.QReplayNetworkModel(game, name="QReplayNetworkModel")
 
             _, _, e, s = model.train(stop_at_convergence=True, discount=0.90, exploration_rate=0.10,
-                                     exploration_decay=0.999, learning_rate=0.10, episodes=1000)
+                        exploration_decay=0.999, learning_rate=0.10, episodes=1000)
 
             print(e, s)
 
@@ -181,8 +188,8 @@ if test == Test.SPEED_TEST_2:
             seconds.append(s.seconds)
 
         logging.disable(logging.NOTSET)
-        logging.info("model: {} | trained {} times | average no of episodes: {}| average training time {}"
-                     .format(model.name, runs, np.average(episodes), np.sum(seconds) / len(seconds)))
+        logging.info("model: {} | trained {} times | average no of episodes: {}| average training time {}".
+                        format(model.name, runs, np.average(episodes), np.sum(seconds) / len(seconds)))
 
         epi.append(episodes)
         sec.append(seconds)

@@ -96,8 +96,12 @@ class QReplayNetworkModel(AbstractModel):
         :param kwargs: model dependent init parameters
         """
         super().__init__(game, **kwargs)
+        self.model=None
 
-        if kwargs.get("load", False) is False:
+        if self.model:
+            pass
+
+        elif kwargs.get("load", False) is False:
             self.model = Sequential()
             self.model.add(Dense(game.maze.size, input_shape=(2,), activation="relu"))
             self.model.add(Dense(game.maze.size, activation="relu"))
@@ -158,7 +162,9 @@ class QReplayNetworkModel(AbstractModel):
 
             loss = 0.0
 
+            subEpisode=0
             while True:
+                subEpisode+=1
                 if np.random.random() < exploration_rate:
                     action = random.choice(self.environment.actions)
                 else:
@@ -180,13 +186,16 @@ class QReplayNetworkModel(AbstractModel):
                 self.model.fit(inputs,
                                targets,
                                epochs=4,
-                               batch_size=16,
+                               batch_size=16, 
                                verbose=0)
                 loss += self.model.evaluate(inputs, targets, verbose=0)
 
                 state = next_state
 
                 self.environment.render_q(self)
+                print(f'Episode: {episode} sub episode {subEpisode}')
+
+            print(f'Episode: {episode} completed.')
 
             cumulative_reward_history.append(cumulative_reward)
 
