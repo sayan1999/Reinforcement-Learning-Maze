@@ -193,7 +193,7 @@ class QReplayNetworkModel(AbstractModel):
                 state = next_state
 
                 self.environment.render_q(self)
-                print(f'Episode: {episode} sub episode {subEpisode}')
+                print(f'Episode: {episode} subepisode: {subEpisode}')
 
             print(f'Episode: {episode} completed.')
 
