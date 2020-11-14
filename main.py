@@ -48,7 +48,7 @@ for netID, game in enumerate(games):
                                 stop_at_convergence=True)
         startnet+=1
         open(varfile, 'w+').write(f'{startnet}')
-        # print(f'Net ID: {netID} completed')
+        print(f'Net ID: {netID} completed')
 
 # draw graphs showing development of win rate and cumulative rewards
 try:
