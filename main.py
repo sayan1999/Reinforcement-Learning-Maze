@@ -29,45 +29,46 @@ test = Test.DEEP_Q  # which test to run
 maze, nets = readMaze('mazeData/test_12_12_1.in')
 games = [Maze(maze, *net) for net in nets]
 
-varfile="/content/drive/My Drive/vars"
-startnet=0
-if os.path.isfile(varfile):
-    startnet=int(open(varfile).read().strip().split()[0])
-    f=open(varfile, 'w')
+# varfile="/content/drive/My Drive/vars"
+# startnet=0
+
+# if os.path.isfile(varfile):
+#     startnet=int(open(varfile).read().strip().split()[0])
+#     f=open(varfile, 'w')
 modelpath="/content/drive/My Drive/QReplayNetworkModel"
-load = True if os.path.isfile(modelpath) else False
+# load = True if os.path.isfile(modelpath) else False
 
-for netID, game in enumerate(games):
-    if netID < startnet:
-        continue
-    # train using a neural network with experience replay (also saves the resulting model)
-    if test == Test.DEEP_Q:
-        # game.render(Render.TRAINING)
-        model = models.QReplayNetworkModel(game, name=modelpath, load=load)
-        h, w, _, _ = model.train(discount=0.80, exploration_rate=0.10, episodes=3, max_memory=maze.size * 4,
-                                stop_at_convergence=True)
-        startnet+=1
-        open(varfile, 'w+').write(f'{startnet}')
-        print(f'Net ID: {netID} completed')
+# for netID, game in enumerate(games):
+#     if netID < startnet:
+#         continue
+#     # train using a neural network with experience replay (also saves the resulting model)
+#     if test == Test.DEEP_Q:
+#         # game.render(Render.TRAINING)
+#         model = models.QReplayNetworkModel(game, name=modelpath, load=load)
+#         h, w, _, _ = model.train(discount=0.80, exploration_rate=0.10, episodes=3, max_memory=maze.size * 4,
+#                                 stop_at_convergence=True)
+#         startnet+=1
+#         open(varfile, 'w+').write(f'{startnet}')
+#         print(f'Net ID: {netID} completed')
 
-# draw graphs showing development of win rate and cumulative rewards
-try:
-    h  # force a NameError exception if h does not exist, and thus don't try to show win rate and cumulative reward
-    fig, (ax1, ax2) = plt.subplots(2, 1, tight_layout=True)
-    fig.canvas.set_window_title(model.name)
-    ax1.plot(*zip(*w))
-    ax1.set_xlabel("episode")
-    ax1.set_ylabel("win rate")
-    ax2.plot(h)
-    ax2.set_xlabel("episode")
-    ax2.set_ylabel("cumulative reward")
-    plt.show()
-except NameError:
-    pass
+# # draw graphs showing development of win rate and cumulative rewards
+# try:
+#     h  # force a NameError exception if h does not exist, and thus don't try to show win rate and cumulative reward
+#     fig, (ax1, ax2) = plt.subplots(2, 1, tight_layout=True)
+#     fig.canvas.set_window_title(model.name)
+#     ax1.plot(*zip(*w))
+#     ax1.set_xlabel("episode")
+#     ax1.set_ylabel("win rate")
+#     ax2.plot(h)
+#     ax2.set_xlabel("episode")
+#     ax2.set_ylabel("cumulative reward")
+#     plt.show()
+# except NameError:
+#     pass
 
-# load a previously trained model
-if test == Test.LOAD_DEEP_Q:
-    model = models.QReplayNetworkModel(game, name="/content/drive/My Drive/QReplayNetworkModel", load=True)
+# # load a previously trained model
+# if test == Test.LOAD_DEEP_Q:
+#     model = models.QReplayNetworkModel(game, name="/content/drive/My Drive/QReplayNetworkModel", load=True)
 
 # # compare learning speed (cumulative rewards and win rate) of several models in a diagram
 # if test == Test.SPEED_TEST_1:
@@ -148,10 +149,9 @@ if test == Test.LOAD_DEEP_Q:
 #         sec_ax[i].hist(sec[i], edgecolor="black")
 
 #     plt.show()
-
+game=games[0]
 game.render(Render.MOVES)
-# game.play(model, start_cell=(0, 0))
-# game.play(model, start_cell=(2, 5))
+
 if model==None:
     model=models.QReplayNetworkModel(game, name=modelpath)
 game.play(model, start_cell=(0, 0))
