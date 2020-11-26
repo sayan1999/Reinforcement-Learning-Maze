@@ -10,7 +10,7 @@ from mazeReader.maze import readMaze
 
 logging.basicConfig(format="%(levelname)-8s: %(asctime)s: %(message)s",
                     datefmt="%Y-%m-%d %H:%M:%S",
-                    level=logging.INFO)  # Only show messages *equal to or above* this level
+                    level=logging.INFO)
 
 class Test(Enum):
     SHOW_MAZE_ONLY = auto()
@@ -24,17 +24,18 @@ class Test(Enum):
     SPEED_TEST_1 = auto()
     SPEED_TEST_2 = auto()
 
-test = Test.DEEP_Q  # which test to run
+test = Test.DEEP_Q
 
 maze, nets = readMaze('mazeData/test_12_12_1.in')
 games = [Maze(maze, *net) for net in nets]
 
-modelpath="/content/drive/My Drive/QReplayNetworkModel"
+modelpath="QReplayNetworkModel"
 
 game=games[0]
 game.render(Render.MOVES)
 
 model=models.QReplayNetworkModel(game, name=modelpath)
-game.play(model, start_cell=(0, 0))
+print(game.play(model, start_cell=(8, 8)))
+print("done")
 
 plt.show()

@@ -10,7 +10,7 @@ from mazeReader.maze import readMaze
 
 logging.basicConfig(format="%(levelname)-8s: %(asctime)s: %(message)s",
                     datefmt="%Y-%m-%d %H:%M:%S",
-                    level=logging.INFO)  # Only show messages *equal to or above* this level
+                    level=logging.INFO)
 
 class Test(Enum):
     SHOW_MAZE_ONLY = auto()
@@ -27,7 +27,7 @@ class Test(Enum):
 test = Test.DEEP_Q  # which test to run
 
 maze, nets = readMaze('mazeData/test_12_12_1.in')
-games = [Maze(maze, *net) for net in nets]
+games = [Maze(maze, *net) for net in nets][:1]
 
 varfile="/content/drive/My Drive/vars"
 startnet=0
