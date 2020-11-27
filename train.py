@@ -29,26 +29,17 @@ test = Test.DEEP_Q  # which test to run
 maze, nets = readMaze('mazeData/test_12_12_1.in')
 games = [Maze(maze, *net) for net in nets][:1]
 
-varfile="/content/drive/My Drive/vars"
-startnet=0
-
-if os.path.isfile(varfile):
-    startnet=int(open(varfile).read().strip().split()[0])
-    f=open(varfile, 'w')
 modelpath="/content/drive/My Drive/QReplayNetworkModel"
 load = True if os.path.isfile(modelpath) else False
 
 for netID, game in enumerate(games):
-    if netID < startnet:
-        continue
+
     # train using a neural network with experience replay (also saves the resulting model)
     if test == Test.DEEP_Q:
         # game.render(Render.TRAINING)
         model = models.QReplayNetworkModel(game, name=modelpath, load=load)
-        h, w, _, _ = model.train(discount=0.80, exploration_rate=0.10, episodes=3, max_memory=maze.size * 4,
+        h, w, _, _ = model.train(discount=0.80, exploration_rate=0.10, episodes=4, max_memory=maze.size * 4,
                                 stop_at_convergence=True)
-        startnet+=1
-        open(varfile, 'w+').write(f'{startnet}')
         print(f'Net ID: {netID} completed')
 
 # draw graphs showing development of win rate and cumulative rewards
