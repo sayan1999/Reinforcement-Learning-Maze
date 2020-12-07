@@ -27,12 +27,12 @@ class Test(Enum):
 
 # configuration setup
 mazefile='mazeData/test_12_12_1.in'
-modelpath='/content/drive/My Drive/QReplayNetworkModel'
+modelpath='/content/drive/My Drive/Colab Notebooks/QReplayNetworkModel'
 test = Test.DEEP_Q  # which test to run
 episodesPerNet = 4
 
 def canload(modelpath):
-    if (True if os.path.isfile(modelpath) else False):
+    if (True if (f'{os.path.isfile(modelpath)}.h5' and f'{os.path.isfile(modelpath)}.json') else False):
         print('Loading old model for retrain')
         return True
     print('Initializing new model')
