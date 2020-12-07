@@ -32,7 +32,7 @@ test = Test.DEEP_Q  # which test to run
 episodesPerNet = 4
 
 def canload(modelpath):
-    if (True if (f'{os.path.isfile(modelpath)}.h5' and f'{os.path.isfile(modelpath)}.json') else False):
+    if (True if (os.path.isfile(f'{modelpath}.h5') and os.path.isfile(f'{modelpath}.json')) else False):
         print('Loading old model for retrain')
         return True
     print('Initializing new model')
