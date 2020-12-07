@@ -24,18 +24,16 @@ class Test(Enum):
     SPEED_TEST_1 = auto()
     SPEED_TEST_2 = auto()
 
+# configuration setup
+mazefile='mazeData/test_12_12_1.in'
+modelpath="QReplayNetworkModel"
 test = Test.DEEP_Q
 
-maze, nets = readMaze('mazeData/test_12_12_1.in')
+maze, nets = readMaze(mazefile)
 games = [Maze(maze, *net) for net in nets]
 
-modelpath="QReplayNetworkModel"
-
-game=games[0]
-game.render(Render.MOVES)
-
-model=models.QReplayNetworkModel(game, name=modelpath)
-print(game.play(model, start_cell=(8, 8)))
-print("done")
-
-plt.show()
+for game in games:
+    game.render(Render.MOVES)
+    model=models.QReplayNetworkModel(game, name=modelpath)
+    print(game.play(model, start_cell=(8, 8)))
+    plt.show()
