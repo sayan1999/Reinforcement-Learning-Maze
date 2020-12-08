@@ -26,7 +26,7 @@ class Test(Enum):
 
 
 # configuration setup
-mazefile='mazeData/test_12_12_1.in'
+# mazefile='mazeData/test_12_12_1.in'
 modelpath='/content/drive/My Drive/Colab Notebooks/QReplayNetworkModel'
 test = Test.DEEP_Q  # which test to run
 episodesPerNet = 4
@@ -39,8 +39,21 @@ def canload(modelpath):
     return False
 
 load = canload(modelpath)
-maze, nets = readMaze(mazefile)
-games = [Maze(maze, *net) for net in nets]
+# maze, nets = readMaze(mazefile)
+# games = [Maze(maze, *net) for net in nets]
+
+maze = np.array([
+    [0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 1, 0, 1, 0, 0],
+    [0, 0, 0, 1, 1, 0, 1, 0],
+    [0, 1, 0, 1, 0, 0, 0, 0],
+    [1, 0, 0, 1, 0, 1, 0, 0],
+    [0, 0, 0, 1, 0, 1, 1, 1],
+    [0, 1, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0]
+])  # 0 = free, 1 = occupied
+
+games = [Maze(maze)]
 
 # training
 for netID, game in enumerate(games):
