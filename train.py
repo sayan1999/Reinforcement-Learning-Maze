@@ -29,7 +29,7 @@ class Test(Enum):
 mazefile='mazeData/test_12_12_1.in'
 modelpath='/content/drive/My Drive/Colab Notebooks/QReplayNetworkModel'
 test = Test.DEEP_Q  # which test to run
-episodesPerNet = 10
+episodesPerNet = 4
 
 def canload(modelpath):
     if (True if (os.path.isfile(f'{modelpath}.h5') and os.path.isfile(f'{modelpath}.json')) else False):
