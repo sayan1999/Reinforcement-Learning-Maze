@@ -10,9 +10,9 @@ import tensorflow
 
 tensorflow.compat.v1.random.set_random_seed(2)
 
-from keras import Sequential
-from keras.layers import Dense
-from keras.models import model_from_json
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.models import model_from_json
 
 from environment import Status
 from models import AbstractModel
