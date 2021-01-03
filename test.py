@@ -26,11 +26,11 @@ class Test(Enum):
 
 # configuration setup
 # mazefile='mazeData/test_12_12_1.in'
-modelpath="QReplayNetworkModel"
+modelpath='/content/drive/My Drive/Colab Notebooks/QReplayNetworkModel'
 test = Test.DEEP_Q
 
 # maze, nets = readMaze(mazefile)
-# games = [Maze(maze, *net) for net in nets]
+# game = [Maze(maze, *net) for net in nets][choose any net index]
 
 maze = np.array([
     [0, 1, 0, 0, 0, 0, 0, 0],
@@ -42,11 +42,9 @@ maze = np.array([
     [0, 1, 1, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 1, 0, 0]
 ])  # 0 = free, 1 = occupied
+game = Maze(maze)
 
-games = [Maze(maze)]
-
-for game in games:
-    game.render(Render.MOVES)
-    model=models.QReplayNetworkModel(game, name=modelpath)
-    print(game.play(model, start_cell=(4, 1)))
-    plt.show()
+game.render(Render.MOVES)
+model=models.QReplayNetworkModel(game, name=modelpath)
+print(game.play(model, start_cell=(4, 1)))
+plt.show()

@@ -12,6 +12,10 @@ logging.basicConfig(format="%(levelname)-8s: %(asctime)s: %(message)s",
                     datefmt="%Y-%m-%d %H:%M:%S",
                     level=logging.INFO)
 
+import tensorflow as tf
+print(tf.__version__) # Result should be '2.2.0-rc2'
+print(tf.config.list_physical_devices('GPU'))
+
 class Test(Enum):
     SHOW_MAZE_ONLY = auto()
     RANDOM_MODEL = auto()
@@ -29,7 +33,8 @@ class Test(Enum):
 # mazefile='mazeData/test_12_12_1.in'
 modelpath='/content/drive/My Drive/Colab Notebooks/QReplayNetworkModel'
 test = Test.DEEP_Q  # which test to run
-episodesPerNet = 4
+episodesPerSave = 10
+totalepisodes=250
 
 def canload(modelpath):
     if (True if (os.path.isfile(f'{modelpath}.h5') and os.path.isfile(f'{modelpath}.json')) else False):
@@ -39,6 +44,7 @@ def canload(modelpath):
     return False
 
 load = canload(modelpath)
+
 # maze, nets = readMaze(mazefile)
 # games = [Maze(maze, *net) for net in nets]
 
@@ -52,16 +58,20 @@ maze = np.array([
     [0, 1, 1, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 1, 0, 0]
 ])  # 0 = free, 1 = occupied
-
+# training
 games = [Maze(maze)]
 
-# training
-for netID, game in enumerate(games):
 
-    if test == Test.DEEP_Q:
-        ## uncomment to turn GUI off
-        # game.render(Render.TRAINING)
-        model = models.QReplayNetworkModel(game, name=modelpath, load=load)
-        h, w, _, _ = model.train(discount=0.80, exploration_rate=0.10, episodes=episodesPerNet, max_memory=maze.size * 4,
-                                stop_at_convergence=True)
-        print(f'Net ID: {netID} completed')
+for game in games:
+    
+    epoch=0
+    for i in range(totalepisodes//episodesPerSave):
+        if test == Test.DEEP_Q:
+            ## uncomment to turn GUI off
+            # game.render(Render.TRAINING)
+            model = models.QReplayNetworkModel(game, name=modelpath, load=load)
+            h, w, _, _ = model.train(discount=0.80, exploration_rate=0.10, episodes=episodesPerSave, max_memory=maze.size * 4,
+                                    stop_at_convergence=True)
+            print(f'Moel saved to {modelpath}')
+            print(f'Epoch: {epoch} completed')
+            epoch+=1
